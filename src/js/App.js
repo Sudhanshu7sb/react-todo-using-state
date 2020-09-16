@@ -1,34 +1,20 @@
 import React from "react";
-// import { render } from "@testing-library/react";
-let filterTodos = [];
-export default class App extends React.Component {
-  constructor(props) {
-    super(props);
+import Form from "../components/Form";
+import TodoList from "../components/TodoList";
+import Footer from "../components/Footer";
+
+class App extends React.Component {
+  constructor() {
+    super();
     this.state = {
       todos: [],
       input: "",
       activeTab: "ALL",
     };
   }
-  handleClear=()=>{
-    let clear=this.state.todos.filter(todo=>!todo.isDone)
-    this.setState({todos:clear})
-  }
-  filterTodo = (tab, todos) => {
-    switch (tab) {
-      case "ACTIVE":
-        return todos.filter((todo) => !todo.isDone);
-      case "COMPLETED":
-        return todos.filter((todo) => todo.isDone);
-      default:
-        return todos;
-    }
-  };
-  handleChange = (value) => {
-    this.setState({ input: value });
-  };
-  handleSubmit = (e) => {
-    e.preventDefault();
+
+  handleSubmit = (event) => {
+    event.preventDefault();
     this.setState({
       todos: [
         ...this.state.todos,
@@ -38,73 +24,73 @@ export default class App extends React.Component {
     });
   };
 
-  handleRemove = (id) => {
-    let Filter = this.state.todos.filter((todo) => todo.id !== id);
-    this.setState({ todos: Filter });
+  handleChange = (value) => {
+    this.setState({ input: value });
   };
+
   handleToggle = (id) => {
-    let Mapped = this.state.todos.map((todo) => {
+    let MappedTodo = this.state.todos.map((todo) => {
       if (todo.id === id) {
         todo.isDone = !todo.isDone;
       }
       return todo;
     });
-    this.setState({ todos: Mapped });
-    // this.setState({todos.completed : this.state.todos.filter(todo => todo.isDone)});
+    this.setState({ todos: MappedTodo });
   };
 
-  handleTab = (str) => {
-    this.setState({ activeTab: str });
+  handleDelete = (id) => {
+    let activeTodos = this.state.todos.filter((todo) => todo.id !== id);
+    this.setState({ todos: activeTodos });
   };
+
+  handleTab = (tab) => {
+    this.setState({ activeTab: tab });
+  }
+
+  handleClearCompleted = (e) => {
+    let filter = this.state.todos.filter((todo) => !todo.isDone);
+    this.setState({ todos: filter });
+  };
+
+  filterTodos(tab, todos) {
+    switch (tab) {
+      case "ACTIVE":
+        return todos.filter((todo) => !todo.isDone);
+      case "COMPLETED":
+        return todos.filter((todo) => todo.isDone);
+      default:
+        return todos;
+    }
+  }
+
   render() {
-    // console.log(this.state.input,"rendering");
-    filterTodos = this.filterTodo(this.state.activeTab, this.state.todos);
-    console.log(filterTodos, "state");
+    let filterTodos = this.filterTodos(this.state.activeTab, this.state.todos);
+
     return (
       <div className="container">
         <h1>todos</h1>
         <div className="drop-down-flex">
-          <form onSubmit={this.handleSubmit}>
-            <input className="text-input"
-              value={this.state.input}
-              onChange={({ target: { value } }) => this.handleChange(value)}
-            />
-          </form>
-          
-          <ul>
-            {filterTodos.map((todo, i) => {
-              return (
-                <li key={i}>
-                  <input
-                    type="checkbox"
-                    checked={todo.isDone}
-                    onChange={() => this.handleToggle(todo.id)}
-                  />
-                  <p>{todo.text}</p>
-                  <span onClick={() => this.handleRemove(todo.id)}>X</span>
-                </li>
-              );
-            })}
-          </ul>
-          </div>
-        <footer>
-          <span class="item">0 item left</span>
-          <button class="all" onClick={() => this.handleTab("ALL")}>
-            All
-          </button>
-          <button class="completed" onClick={() => this.handleTab("COMPLETED")}>
-            Completed
-          </button>
-          <button class="active" onClick={() => this.handleTab("ACTIVE")}>
-            Active
-          </button>
-          <button todosclass="clear" onClick={this.handleClear}>
-            <a class="anchor" href="##">
-              Clear Completed
-            </a>
-          </button>
-        </footer>
+          <Form
+            handleSubmit={this.handleSubmit}
+            handleChange={this.handleChange}
+          />
+
+          <TodoList
+            filterTodos={filterTodos}
+            handleToggle={this.handleToggle}
+            handleDelete={this.handleDelete}
+          />
+        </div>
+
+        <Footer
+          leftItems={this.state.todos.filter((todo) => !todo.isDone).length}
+          tab={this.state.activeTab}
+          handleTab={this.handleTab}
+          handleClearCompleted={this.handleClearCompleted}
+        />
       </div>
     );
   }
 }
+
+export default App;
