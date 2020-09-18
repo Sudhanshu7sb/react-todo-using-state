@@ -2,11 +2,11 @@ import React from "react";
 import InputTodo from "./InputTodo";
 
 class Form extends React.Component {
-  render(props) {
+  render() {
     return (
       <>
         <form onSubmit={(event) => this.props.handleSubmit(event)}>
-          <InputTodo handleChange={this.props.handleChange} />
+          <InputTodo value={this.props.inputText} handleChange={this.props.handleChange} />
         </form>
       </>
     );

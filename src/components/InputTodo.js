@@ -1,7 +1,7 @@
 import React from "react";
 
 class InputTodo extends React.Component {
-  render(props) {
+  render() {
     return (
       <>
         <input

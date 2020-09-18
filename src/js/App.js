@@ -25,6 +25,7 @@ class App extends React.Component {
   };
 
   handleChange = (value) => {
+    console.log(value)
     this.setState({ input: value });
   };
 
@@ -73,6 +74,7 @@ class App extends React.Component {
           <Form
             handleSubmit={this.handleSubmit}
             handleChange={this.handleChange}
+            inputText={this.state.input}
           />
 
           <TodoList
